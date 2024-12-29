@@ -342,4 +342,166 @@ POST /captains/register
 - Initial status is set to "inactive"
 - Email addresses are stored in lowercase
 
+## Captain Login
+Endpoint for authenticating existing captains.
+
+### Endpoint
+```
+POST /captains/login
+```
+
+### Request Body
+```json
+{
+  "email": "string",    // valid email format
+  "password": "string"  // minimum 6 characters
+}
+```
+
+### Response
+
+#### Success Response
+**Code:** 200 OK
+```json
+{
+  "message": "Captain logged in successfully",
+  "captain": {
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "status": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": "number",
+      "vehicleType": "string"
+    },
+    "location": {
+      "lat": "number",
+      "lng": "number"
+    },
+    "_id": "string"
+  },
+  "token": "JWT_TOKEN"
+}
+```
+
+#### Error Responses
+
+**Code:** 400 BAD REQUEST
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+### Validation Rules
+- **email**: Required, must be valid email format
+- **password**: Required, minimum 6 characters
+
+### Authentication
+- This endpoint does not require authentication
+- Returns JWT token upon successful login
+
+### Notes
+- The JWT token is set as an HTTP-only cookie
+- Password is never returned in the response
+- Use the returned token in subsequent requests by adding it to the Authorization header: `Bearer <token>`
+
+## Get Captain Profile
+Endpoint for retrieving the current captain's profile information.
+
+### Endpoint
+```
+GET /captains/profile
+```
+
+### Request
+No request body required.
+
+### Response
+
+#### Success Response
+**Code:** 200 OK
+```json
+{
+  "message": "Captain profile fetched successfully",
+  "captain": {
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "status": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": "number",
+      "vehicleType": "string"
+    },
+    "location": {
+      "lat": "number",
+      "lng": "number"
+    },
+    "_id": "string"
+  }
+}
+```
+
+#### Error Response
+**Code:** 401 UNAUTHORIZED
+```json
+{
+  "message": "Unauthorized access"
+}
+```
+
+### Authentication
+- Requires valid JWT token in Authorization header
+- Format: `Bearer <token>`
+
+### Notes
+- Returns the current authenticated captain's profile data
+- Password is never included in the response
+
+## Captain Logout
+Endpoint for logging out the current captain.
+
+### Endpoint
+```
+POST /captains/logout
+```
+
+### Request
+No request body required.
+
+### Response
+
+#### Success Response
+**Code:** 200 OK
+```json
+{
+  "message": "Captain logged out successfully"
+}
+```
+
+#### Error Response
+**Code:** 401 UNAUTHORIZED
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### Authentication
+- Requires valid JWT token in Authorization header
+- Format: `Bearer <token>`
+
+### Notes
+- Invalidates the current session by blacklisting the token
+- Clears the token cookie
+- Any subsequent requests with the same token will be rejected
+
 
