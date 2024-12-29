@@ -151,4 +151,88 @@ POST /users/login
 - Password is never returned in the response
 - Use the returned token in subsequent requests by adding it to the Authorization header: `Bearer <token>`
 
+## Get User Profile
+Endpoint for retrieving the current user's profile information.
+
+### Endpoint
+```
+GET /users/getProfile
+```
+
+### Request
+No request body required.
+
+### Response
+
+#### Success Response
+**Code:** 200 OK
+```json
+{
+  "user": {
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "_id": "string",
+    "socketId": "string"
+    // password field is excluded from response
+  }
+}
+```
+
+#### Error Response
+**Code:** 401 UNAUTHORIZED
+```json
+{
+  "message": "Unauthorized access"
+}
+```
+
+### Authentication
+- Requires valid JWT token in Authorization header
+- Format: `Bearer <token>`
+
+### Notes
+- Returns the current authenticated user's profile data
+- Password is never included in the response
+
+## User Logout
+Endpoint for logging out the current user.
+
+### Endpoint
+```
+POST /users/logout
+```
+
+### Request
+No request body required.
+
+### Response
+
+#### Success Response
+**Code:** 200 OK
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Error Response
+**Code:** 401 UNAUTHORIZED
+```json
+{
+  "message": "Unauthorized access"
+}
+```
+
+### Authentication
+- Requires valid JWT token in Authorization header
+- Format: `Bearer <token>`
+
+### Notes
+- Invalidates the current session
+- Clears the user's socket ID from the database
+- Any subsequent requests with the same token will be rejected
+
 
