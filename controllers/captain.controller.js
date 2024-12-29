@@ -62,3 +62,7 @@ exports.loginCaptain = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 }
+
+exports.getCaptainProfile = async(req,res) => {
+    return res.status(200).json({message:"Captain profile fetched successfully",captain:req.captain});
+}
