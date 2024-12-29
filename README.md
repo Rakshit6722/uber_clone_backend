@@ -9,6 +9,8 @@ POST /user/register
 ```
 
 ```json
+### Request Body
+
 {
   "fullname": {
     "firstname": "string", // minimum 3 characters
