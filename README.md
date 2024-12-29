@@ -8,8 +8,9 @@ Endpoint for registering new users in the system.
 POST /user/register
 ```
 
-```json
 ### Request Body
+
+```json
 
 {
   "fullname": {
