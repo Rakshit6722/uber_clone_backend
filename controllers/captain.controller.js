@@ -1,3 +1,4 @@
+const blacklistToken = require("../models/blacklistToken.model");
 const captainModel = require("../models/captain.model");
 const captainService = require("../services/captain.service");
 const { validationResult } = require("express-validator");
@@ -65,4 +66,11 @@ exports.loginCaptain = async (req, res) => {
 
 exports.getCaptainProfile = async(req,res) => {
     return res.status(200).json({message:"Captain profile fetched successfully",captain:req.captain});
+}
+
+exports.logoutCaptain = async(req,res) => {
+    res.clearCookie('token');
+    const token = req.cookies.token || req.header('Authorization')?.split(' ')[1];
+    await blacklistToken.create({token});
+    return res.status(200).json({message:"Captain logged out successfully"});
 }
