@@ -36,3 +36,11 @@ exports.createCaptain = async({
 
     return createdCaptain;
 }
+
+exports.findCaptainByEmail = async(email) => {
+    const captain = await captainModel.findOne({email}).select('+password');
+    if(!captain){
+        throw new Error("Captain not found");
+    }
+    return captain;
+}
