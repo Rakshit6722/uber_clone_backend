@@ -4,6 +4,7 @@ const { connectDB } = require("./config/database");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/user.routes");
+const captainRoutes = require("./routes/captain.routes");
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,8 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
+app.use("/api/captains", captainRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Hello World");
