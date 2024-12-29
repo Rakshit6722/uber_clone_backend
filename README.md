@@ -78,4 +78,3 @@ POST /user/register
 - Password is automatically hashed before storage
 - The response includes a JWT token that can be used for subsequent authenticated requests
 - The password field is excluded from the user object in the response
-``` 
