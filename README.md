@@ -7,7 +7,7 @@ Endpoint for registering new users in the system.
 ```
 POST /user/register
 ```
-<code_block_to_apply_changes_from>
+
 ```json
 {
   "fullname": {
