@@ -13,4 +13,9 @@ router.post("/register",[
     body("vehicle.vehicleType").isIn(['car','motorcycle','auto']).withMessage("Vehicle type is required"),
 ], captainController.registerCaptain);
 
+router.post('/login',[
+    body('email').isEmail().withMessage('Invalid email address'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 8 characters long'),
+], captainController.loginCaptain);
+
 module.exports = router;
