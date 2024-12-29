@@ -31,3 +31,34 @@ exports.registerCaptain = async (req, res) => {
 
     res.status(201).json({ message: "Captain registered successfully", captain, token });
 }
+
+exports.loginCaptain = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email, password } = req.body;
+
+    try {
+        const captain = await captainService.findCaptainByEmail(email);
+        if (!captain) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        const isPasswordMatch = await captain.comparePassword(password);
+
+        if (!isPasswordMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        const token = await captain.generateAuthToken();
+        console.log(token)
+
+        res.cookie('token', token)
+        res.status(200).json({ message: "Captain logged in successfully", captain, token });
+
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
