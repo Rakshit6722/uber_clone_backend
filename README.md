@@ -235,4 +235,111 @@ No request body required.
 - Clears the user's socket ID from the database
 - Any subsequent requests with the same token will be rejected
 
+## Captain Registration
+Endpoint for registering new captains in the system.
+
+### Endpoint
+```
+POST /captains/register
+```
+
+### Request Body
+```json
+{
+  "fullname": {
+    "firstname": "string", // minimum 3 characters
+    "lastname": "string"   // optional, minimum 3 characters if provided
+  },
+  "email": "string",      // valid email format, will be converted to lowercase
+  "password": "string",   // will be hashed before storage
+  "vehicle": {
+    "color": "string",    // minimum 3 characters
+    "plate": "string",    // minimum 3 characters
+    "capacity": "number", // minimum value of 1
+    "vehicleType": "string" // must be one of: "car", "motorcycle", "auto"
+  },
+  "location": {           // optional
+    "lat": "number",
+    "lng": "number"
+  }
+}
+```
+
+### Response
+
+#### Success Response
+**Code:** 201 CREATED
+```json
+{
+  "message": "Captain registered successfully",
+  "captain": {
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "status": "inactive",  // default status
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": "number",
+      "vehicleType": "string"
+    },
+    "location": {
+      "lat": "number",
+      "lng": "number"
+    },
+    "_id": "string"
+    // password field is excluded from response
+  },
+  "token": "JWT_TOKEN"
+}
+```
+
+#### Error Responses
+
+**Code:** 400 BAD REQUEST
+```json
+{
+  "errors": [
+    {
+      "msg": "First name must be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+  ]
+}
+```
+
+**Code:** 400 BAD REQUEST
+```json
+{
+  "error": "Email already exists"
+}
+```
+
+### Validation Rules
+- **firstname**: Required, minimum 3 characters
+- **lastname**: Optional, minimum 3 characters if provided
+- **email**: Required, must be valid email format, must be unique
+- **password**: Required
+- **vehicle.color**: Required, minimum 3 characters
+- **vehicle.plate**: Required, minimum 3 characters
+- **vehicle.capacity**: Required, minimum value of 1
+- **vehicle.vehicleType**: Required, must be one of: "car", "motorcycle", "auto"
+- **location**: Optional
+  - **lat**: Number
+  - **lng**: Number
+
+### Authentication
+- This endpoint does not require authentication
+- Returns JWT token upon successful registration
+
+### Notes
+- Password is automatically hashed before storage
+- The response includes a JWT token that can be used for subsequent authenticated requests
+- The password field is excluded from the captain object in the response
+- Initial status is set to "inactive"
+- Email addresses are stored in lowercase
+
 
