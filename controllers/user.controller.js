@@ -13,12 +13,16 @@ exports.registerUser = async (req, res) => {
 
     const hashedPassword = await userModel.encryptPassword(password);
 
-    const user = await userService.createUser({
-        firstname:fullname.firstname,
-        lastname:fullname.lastname,
-        email,
-        password:hashedPassword
-    });
+    try{
+        const user = await userService.createUser({
+            firstname:fullname.firstname,
+            lastname:fullname.lastname,
+            email,
+            password:hashedPassword
+        });
+    }catch(err){
+        res.status(400).json({message:err.message});
+    }
 
     const token = user.generateAuthToken();
 
