@@ -47,3 +47,7 @@ exports.loginUser = async(req,res) => {
     const token = user.generateAuthToken();
     res.status(200).json({message:"Login successful", user, token});
 }
+
+exports.getUserProfile = async(req,res) => {
+    res.status(200).json({message:"User profile fetched successfully", user:req.user});
+}
