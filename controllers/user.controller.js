@@ -10,23 +10,22 @@ exports.registerUser = async (req, res) => {
     }
 
     const {fullname, email, password} = req.body;
-
     const hashedPassword = await userModel.encryptPassword(password);
 
-    try{
+    try {
         const user = await userService.createUser({
-            firstname:fullname.firstname,
-            lastname:fullname.lastname,
+            firstname: fullname.firstname,
+            lastname: fullname.lastname,
             email,
-            password:hashedPassword
+            password: hashedPassword
         });
-    }catch(err){
-        res.status(400).json({message:err.message});
+        
+        const token = user.generateAuthToken();
+        return res.status(201).json({message: "User created successfully", user, token});
+        
+    } catch(err) {
+        return res.status(400).json({message: err.message});
     }
-
-    const token = user.generateAuthToken();
-
-    res.status(201).json({message:"User created successfully", user, token});
 }
 
 exports.loginUser = async(req,res) => {
