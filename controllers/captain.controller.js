@@ -24,13 +24,13 @@ exports.registerCaptain = async (req, res) => {
             capacity: vehicle.capacity,
             vehicleType: vehicle.vehicleType
         });
+
+        const token = await captain.generateAuthToken();
+        res.status(201).json({ message: "Captain registered successfully", captain, token });
+        
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
-
-    const token = await captain.generateToken();
-
-    res.status(201).json({ message: "Captain registered successfully", captain, token });
 }
 
 exports.loginCaptain = async (req, res) => {
@@ -69,8 +69,34 @@ exports.getCaptainProfile = async(req,res) => {
 }
 
 exports.logoutCaptain = async(req,res) => {
-    const token = req.cookies.token || req.header('Authorization')?.split(' ')[1];
-    await blacklistToken.create({token});
-    res.clearCookie('token');
-    return res.status(200).json({message:"Captain logged out successfully"});
+    try {
+        const token = req.cookies.token || req.header('Authorization')?.split(' ')[1];
+        
+        if (!token) {
+            return res.status(400).json({ message: "No token found" });
+        }
+
+        // First check if token is already blacklisted
+        const existingToken = await blacklistToken.findOne({ token });
+        if (existingToken) {
+            res.clearCookie('token');
+            return res.status(200).json({ message: "Captain logged out successfully" });
+        }
+
+        // If not blacklisted, try to blacklist it
+        try {
+            await blacklistToken.create({ token });
+        } catch (tokenError) {
+            // If token was created by another request in the meantime, that's fine
+            if (tokenError.code !== 11000) {
+                throw tokenError;
+            }
+        }
+        
+        res.clearCookie('token');
+        return res.status(200).json({ message: "Captain logged out successfully" });
+    } catch (err) {
+        console.error('Logout error:', err);
+        return res.status(500).json({ message: "Error during logout" });
+    }
 }
